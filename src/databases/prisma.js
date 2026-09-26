@@ -1,14 +1,14 @@
-// src/database/prisma.js
-const { PrismaClient } =
-  require('@prisma/client');
-const { PrismaMariaDb } =
-  require('@prisma/adapter-mariadb');
+// src/databases/prisma.js
+const { PrismaClient } = require('@prisma/client');
+const { PrismaPg } = require('@prisma/adapter-pg');
+const { Pool } = require('pg');
 
-const adapter = new PrismaMariaDb({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+const connectionString =
+  process.env.DATABASE_URL ||
+  `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME}?schema=public`;
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
 module.exports = new PrismaClient({ adapter });
+

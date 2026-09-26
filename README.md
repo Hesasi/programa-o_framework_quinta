@@ -2,92 +2,71 @@
 
 Este repositório contém os códigos e exemplos desenvolvidos durante a disciplina **Programação para Frameworks Web**, ministrada pelo professor **Thiago Rodrigues**.
 
-## 🚀 Executando o projeto
+## 🐳 Executando com Docker (Recomendado)
 
-Para executar o projeto em sua máquina, siga os passos abaixo.
-
-### 1. Clonar o repositório
-
-Clone este repositório utilizando o Git:
+Para subir a aplicação e o banco de dados PostgreSQL usando Docker Compose:
 
 ```bash
-git clone URL_DO_REPOSITORIO
+docker compose up --build
 ```
 
-Em seguida, entre na pasta do projeto:
+Isso irá:
+1. Subir um container PostgreSQL 16 Alpine na porta `5432`.
+2. Compilar e subir a aplicação Express na porta `3000`.
+3. Executar o `npx prisma db push` automaticamente para aplicar a estrutura do banco.
+
+Para encerrar os containers:
 
 ```bash
-cd NOME_DO_PROJETO
+docker compose down
 ```
 
-### 2. Instalar as dependências
+---
 
-Com o projeto na pasta, execute:
+## 🚀 Executando Localmente (Sem Docker)
+
+### 1. Clonar o repositório e instalar dependências
 
 ```bash
 npm install
 ```
 
-Esse comando irá instalar todas as dependências necessárias para executar o projeto.
+### 2. Variáveis de Ambiente
 
-Depois,
-
-```bash
-npx prisma generate
-```
-
-Esse comando irá fazer o Prisma gerar o Prisma Client a partir do seu schema.prisma.
-
-### 3. Variáveis de Ambiente
-
-> ⚠️ **Lembrete:** sempre que alterar o banco de dados, usuário, senha, porta ou ambiente de execução, **atualize as variáveis de ambiente abaixo**.
+Crie ou edite o arquivo `.env` baseado no `.env.example`:
 
 ```env
-DATABASE_URL="mysql://root:thiago@localhost:3306/univ"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/univ?schema=public"
 
 DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=thiago
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
 DB_NAME=univ
 
 PORT=3000
 ```
 
-#### Banco de Dados
-
-As variáveis abaixo devem corresponder às configurações do banco MySQL utilizado pela aplicação:
-
-* `DATABASE_URL` — URL de conexão com o banco.
-* `DB_HOST` — endereço do servidor MySQL.
-* `DB_USER` — usuário do banco.
-* `DB_PASSWORD` — senha do banco.
-* `DB_NAME` — nome do banco de dados.
-
-#### Servidor
-
-* `PORT` — porta utilizada pela aplicação.
-
-### ⚠️ Importante
-
-Ao clonar o projeto ou configurar um novo ambiente, verifique e **atualize essas variáveis antes de executar a aplicação**.
-
-### 4. Executar o projeto
-
-Após a instalação das dependências, execute o comando definido no projeto para iniciá-lo, por exemplo:
+### 3. Gerar o Prisma Client e Sincronizar o Banco
 
 ```bash
-npm start
+npx prisma generate
+npx prisma db push
 ```
 
-ou:
+### 4. Iniciar a aplicação
 
 ```bash
 npm run dev
 ```
 
-> **Observação:** O comando para iniciar o projeto pode variar de acordo com o projeto desenvolvido em aula. Consulte o `package.json` para verificar os scripts disponíveis.
+ou:
+
+```bash
+npm start
+```
 
 ---
 
-**Disciplina:** Programação para Frameworks Web
+**Disciplina:** Programação para Frameworks Web  
 **Professor:** Thiago Rodrigues
