@@ -35,6 +35,19 @@ class AlunoController {
         }
     }
 
+    async update(request, response) {
+        try {
+            const { id } = request.params;
+            
+            const alunoAtualizado = await alunoService.update(id, request.body);
+            
+            return response.status(200).json({ aluno: alunoAtualizado });
+            
+        } catch (error) {
+            return response.status(error.statusCode || 500).json({ error: error.message });
+        }
+    }
+
 }
 
 module.exports = new AlunoController();

@@ -1,6 +1,7 @@
 const prisma = require("../databases/prisma");
 const AlunoInvalidoError = require("../errors/AlunoInvalidoError");
 const AlunoNaoEncontradoError = require("../errors/AlunoNaoEncontradoError");
+const EmailDuplicadoError = require("../errors/EmailDuplicadoError");
 
 class AlunoService {
 
@@ -38,6 +39,28 @@ class AlunoService {
         const novoAluno = await prisma.aluno.create({ data: aluno });
 
         return novoAluno;
+    }
+
+    async update(id, data) {
+        if (!data || Object.keys(data).length === 0) {
+            throw new AlunoInvalidoError("Corpo da requisição vazio. Informe os dados para atualização.");
+        }
+
+        await this.findUnique(id);
+
+        try {
+            const alunoAtualizado = await prisma.aluno.update({
+                where: { id: Number(id) },
+                data: data
+            });
+            return alunoAtualizado;
+        } catch (error) {
+            if (error.code === 'P2002') {
+                throw new EmailDuplicadoError();
+            }
+            
+            throw error;
+        }
     }
 }
 
