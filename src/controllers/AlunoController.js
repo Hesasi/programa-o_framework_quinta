@@ -3,14 +3,18 @@ const alunoService = require("../services/AlunoService");
 class AlunoController {
     
     async findMany(request, response) {
-        let { page, pageSize, orderBy, order } = request.query;
-        page ||= 1;
-        pageSize ||= 10;
-        orderBy ||= "id";
-        order ||= "asc";
-        
-        const resultado = await alunoService.findMany(page, pageSize, orderBy, order);
-        return response.status(200).json(resultado);
+        try {
+            let { page, pageSize, orderBy, order } = request.query;
+            page ||= 1;
+            pageSize ||= 10;
+            orderBy ||= "id";
+            order ||= "asc";
+
+            const resultado = await alunoService.findMany(page, pageSize, orderBy, order);
+            return response.status(200).json(resultado);
+        } catch (error) {
+            return response.status(error.statusCode || 500).json({ error: error.message });
+        }
     }
 
     async findUnique(request, response) {

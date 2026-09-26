@@ -6,6 +6,11 @@ const EmailDuplicadoError = require("../errors/EmailDuplicadoError");
 class AlunoService {
 
     async findMany(page, pageSize, orderBy = "id", order = "asc") {
+        const camposPermitidos = ["id", "nome", "email", "createdAt", "updatedAt"];
+        if (!camposPermitidos.includes(orderBy)) {
+            throw new AlunoInvalidoError(`Campo de ordenação inválido: "${orderBy}". Use: ${camposPermitidos.join(", ")}.`);
+        }
+
         const direcao = order.toLowerCase() === "desc" ? "desc" : "asc";
         const total = await prisma.aluno.count();
         const alunos = await prisma.aluno.findMany({
